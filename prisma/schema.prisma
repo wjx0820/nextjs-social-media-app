@@ -27,7 +27,7 @@ model User {
   sessions     Session[]
   posts        Post[]
 
-  createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Shanghai'")) @db.Timestamptz(6)
+  createdAt DateTime @default(now())
 
   @@map("users")
 }
@@ -47,7 +47,7 @@ model Post {
   userId  String
   user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(dbgenerated("CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Shanghai'")) @db.Timestamptz(6)
+  createdAt DateTime @default(now())
 
   @@map("posts")
 }
