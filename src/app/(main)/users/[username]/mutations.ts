@@ -1,54 +1,51 @@
-import { useRouter } from "next/navigation"
-
+import { useToast } from "@/components/ui/use-toast";
+import { PostsPage } from "@/lib/types";
+import { useUploadThing } from "@/lib/uploadthing";
+import { UpdateUserProfileValues } from "@/lib/validation";
 import {
   InfiniteData,
   QueryFilters,
   useMutation,
   useQueryClient,
-} from "@tanstack/react-query"
-
-import { useToast } from "@/components/ui/use-toast"
-import { PostsPage } from "@/lib/types"
-import { useUploadThing } from "@/lib/uploadthing"
-import { UpdateUserProfileValues } from "@/lib/validation"
-
-import { updateUserProfile } from "./actions"
+} from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { updateUserProfile } from "./actions";
 
 export function useUpdateProfileMutation() {
-  const { toast } = useToast()
+  const { toast } = useToast();
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
-  const { startUpload: startAvatarUpload } = useUploadThing("avatar")
+  const { startUpload: startAvatarUpload } = useUploadThing("avatar");
 
   const mutation = useMutation({
     mutationFn: async ({
       values,
       avatar,
     }: {
-      values: UpdateUserProfileValues
-      avatar?: File
+      values: UpdateUserProfileValues;
+      avatar?: File;
     }) => {
       return Promise.all([
         updateUserProfile(values),
         avatar && startAvatarUpload([avatar]),
-      ])
+      ]);
     },
     onSuccess: async ([updatedUser, uploadResult]) => {
-      const newAvatarUrl = uploadResult?.[0].serverData.avatarUrl
+      const newAvatarUrl = uploadResult?.[0].serverData.avatarUrl;
 
       const queryFilter: QueryFilters = {
         queryKey: ["post-feed"],
-      }
+      };
 
-      await queryClient.cancelQueries(queryFilter)
+      await queryClient.cancelQueries(queryFilter);
 
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
         queryFilter,
         (oldData) => {
-          if (!oldData) return
+          if (!oldData) return;
 
           return {
             pageParams: oldData.pageParams,
@@ -62,29 +59,29 @@ export function useUpdateProfileMutation() {
                       ...updatedUser,
                       avatarUrl: newAvatarUrl || updatedUser.avatarUrl,
                     },
-                  }
+                  };
                 }
-                return post
+                return post;
               }),
             })),
-          }
+          };
         },
-      )
+      );
 
-      router.refresh()
+      router.refresh();
 
       toast({
         description: "Profile updated",
-      })
+      });
     },
     onError(error) {
-      console.error(error)
+      console.error(error);
       toast({
         variant: "destructive",
         description: "Failed to update profile. Please try again.",
-      })
+      });
     },
-  })
+  });
 
-  return mutation
+  return mutation;
 }

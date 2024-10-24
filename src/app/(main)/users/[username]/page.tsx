@@ -1,25 +1,21 @@
-import { cache } from "react"
-
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
-
-import { formatDate } from "date-fns"
-
-import { validateRequest } from "@/auth"
-import FollowButton from "@/components/FollowButton"
-import FollowerCount from "@/components/FollowerCount"
-import Linkify from "@/components/Linkify"
-import TrendsSidebar from "@/components/TrendsSidebar"
-import UserAvatar from "@/components/UserAvatar"
-import prisma from "@/lib/prisma"
-import { FollowerInfo, getUserDataSelect, UserData } from "@/lib/types"
-import { formatNumber } from "@/lib/utils"
-
-import EditProfileButton from "./EditProfileButton"
-import UserPosts from "./UserPosts"
+import { validateRequest } from "@/auth";
+import FollowButton from "@/components/FollowButton";
+import FollowerCount from "@/components/FollowerCount";
+import Linkify from "@/components/Linkify";
+import TrendsSidebar from "@/components/TrendsSidebar";
+import UserAvatar from "@/components/UserAvatar";
+import prisma from "@/lib/prisma";
+import { FollowerInfo, getUserDataSelect, UserData } from "@/lib/types";
+import { formatNumber } from "@/lib/utils";
+import { formatDate } from "date-fns";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import EditProfileButton from "./EditProfileButton";
+import UserPosts from "./UserPosts";
 
 interface PageProps {
-  params: { username: string }
+  params: { username: string };
 }
 
 const getUser = cache(async (username: string, loggedInUserId: string) => {
@@ -31,39 +27,39 @@ const getUser = cache(async (username: string, loggedInUserId: string) => {
       },
     },
     select: getUserDataSelect(loggedInUserId),
-  })
+  });
 
-  if (!user) notFound()
+  if (!user) notFound();
 
-  return user
-})
+  return user;
+});
 
 export async function generateMetadata({
   params: { username },
 }: PageProps): Promise<Metadata> {
-  const { user: loggedInUser } = await validateRequest()
+  const { user: loggedInUser } = await validateRequest();
 
-  if (!loggedInUser) return {}
+  if (!loggedInUser) return {};
 
-  const user = await getUser(username, loggedInUser.id)
+  const user = await getUser(username, loggedInUser.id);
 
   return {
     title: `${user.displayName} (@${user.username})`,
-  }
+  };
 }
 
 export default async function Page({ params: { username } }: PageProps) {
-  const { user: loggedInUser } = await validateRequest()
+  const { user: loggedInUser } = await validateRequest();
 
   if (!loggedInUser) {
     return (
       <p className="text-destructive">
         You&apos;re not authorized to view this page.
       </p>
-    )
+    );
   }
 
-  const user = await getUser(username, loggedInUser.id)
+  const user = await getUser(username, loggedInUser.id);
 
   return (
     <main className="flex w-full min-w-0 gap-5">
@@ -78,12 +74,12 @@ export default async function Page({ params: { username } }: PageProps) {
       </div>
       <TrendsSidebar />
     </main>
-  )
+  );
 }
 
 interface UserProfileProps {
-  user: UserData
-  loggedInUserId: string
+  user: UserData;
+  loggedInUserId: string;
 }
 
 async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
@@ -92,7 +88,7 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
     isFollowedByUser: user.followers.some(
       ({ followerId }) => followerId === loggedInUserId,
     ),
-  }
+  };
 
   return (
     <div className="h-fit w-full space-y-5 rounded-2xl bg-card p-5 shadow-sm">
@@ -135,5 +131,5 @@ async function UserProfile({ user, loggedInUserId }: UserProfileProps) {
         </>
       )}
     </div>
-  )
+  );
 }

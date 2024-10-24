@@ -1,13 +1,12 @@
-import { Metadata } from "next"
-import Image from "next/image"
-import Link from "next/link"
-
-import LoginForm from "@/app/(auth)/login/LoginForm"
-import loginImage from "@/assets/login-image.jpg"
+import loginImage from "@/assets/login-image.jpg";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
   title: "Login",
-}
+};
 
 export default function Page() {
   return (
@@ -29,5 +28,5 @@ export default function Page() {
         />
       </div>
     </main>
-  )
+  );
 }

@@ -1,31 +1,25 @@
-"use client"
+"use client";
 
-import { ClipboardEvent, useRef } from "react"
-
-import Image from "next/image"
-
-import Placeholder from "@tiptap/extension-placeholder"
-import { EditorContent, useEditor } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
-import { useDropzone } from "@uploadthing/react"
-import { ImageIcon, Loader2, X } from "lucide-react"
-
-import { useSession } from "@/app/(main)/SessionProvider"
-import LoadingButton from "@/components/LoadingButton"
-import { Button } from "@/components/ui/button"
-import UserAvatar from "@/components/UserAvatar"
-import { cn } from "@/lib/utils"
-
-import { useSubmitPostMutation } from "./mutations"
-
-import "./styles.css"
-
-import useMediaUpload, { Attachment } from "./useMediaUpload"
+import { useSession } from "@/app/(main)/SessionProvider";
+import LoadingButton from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
+import UserAvatar from "@/components/UserAvatar";
+import { cn } from "@/lib/utils";
+import Placeholder from "@tiptap/extension-placeholder";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useDropzone } from "@uploadthing/react";
+import { ImageIcon, Loader2, X } from "lucide-react";
+import Image from "next/image";
+import { ClipboardEvent, useRef } from "react";
+import { useSubmitPostMutation } from "./mutations";
+import "./styles.css";
+import useMediaUpload, { Attachment } from "./useMediaUpload";
 
 export default function PostEditor() {
-  const { user } = useSession()
+  const { user } = useSession();
 
-  const mutation = useSubmitPostMutation()
+  const mutation = useSubmitPostMutation();
 
   const {
     startUpload,
@@ -34,13 +28,13 @@ export default function PostEditor() {
     uploadProgress,
     removeAttachment,
     reset: resetMediaUploads,
-  } = useMediaUpload()
+  } = useMediaUpload();
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: startUpload,
-  })
+  });
 
-  const { onClick, ...rootProps } = getRootProps()
+  const { onClick, ...rootProps } = getRootProps();
 
   const editor = useEditor({
     extensions: [
@@ -52,12 +46,12 @@ export default function PostEditor() {
         placeholder: "What's crack-a-lackin'?",
       }),
     ],
-  })
+  });
 
   const input =
     editor?.getText({
       blockSeparator: "\n",
-    }) || ""
+    }) || "";
 
   function onSubmit() {
     mutation.mutate(
@@ -67,18 +61,18 @@ export default function PostEditor() {
       },
       {
         onSuccess: () => {
-          editor?.commands.clearContent()
-          resetMediaUploads()
+          editor?.commands.clearContent();
+          resetMediaUploads();
         },
       },
-    )
+    );
   }
 
   function onPaste(e: ClipboardEvent<HTMLInputElement>) {
     const files = Array.from(e.clipboardData.items)
       .filter((item) => item.kind === "file")
-      .map((item) => item.getAsFile()) as File[]
-    startUpload(files)
+      .map((item) => item.getAsFile()) as File[];
+    startUpload(files);
   }
 
   return (
@@ -124,19 +118,19 @@ export default function PostEditor() {
         </LoadingButton>
       </div>
     </div>
-  )
+  );
 }
 
 interface AddAttachmentsButtonProps {
-  onFilesSelected: (files: File[]) => void
-  disabled: boolean
+  onFilesSelected: (files: File[]) => void;
+  disabled: boolean;
 }
 
 function AddAttachmentsButton({
   onFilesSelected,
   disabled,
 }: AddAttachmentsButtonProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <>
@@ -156,20 +150,20 @@ function AddAttachmentsButton({
         ref={fileInputRef}
         className="sr-only hidden"
         onChange={(e) => {
-          const files = Array.from(e.target.files || [])
+          const files = Array.from(e.target.files || []);
           if (files.length) {
-            onFilesSelected(files)
-            e.target.value = ""
+            onFilesSelected(files);
+            e.target.value = "";
           }
         }}
       />
     </>
-  )
+  );
 }
 
 interface AttachmentPreviewsProps {
-  attachments: Attachment[]
-  removeAttachment: (fileName: string) => void
+  attachments: Attachment[];
+  removeAttachment: (fileName: string) => void;
 }
 
 function AttachmentPreviews({
@@ -191,19 +185,19 @@ function AttachmentPreviews({
         />
       ))}
     </div>
-  )
+  );
 }
 
 interface AttachmentPreviewProps {
-  attachment: Attachment
-  onRemoveClick: () => void
+  attachment: Attachment;
+  onRemoveClick: () => void;
 }
 
 function AttachmentPreview({
   attachment: { file, mediaId, isUploading },
   onRemoveClick,
 }: AttachmentPreviewProps) {
-  const src = URL.createObjectURL(file)
+  const src = URL.createObjectURL(file);
 
   return (
     <div
@@ -231,5 +225,5 @@ function AttachmentPreview({
         </button>
       )}
     </div>
-  )
+  );
 }

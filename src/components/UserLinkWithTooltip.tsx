@@ -1,19 +1,15 @@
-"use client"
+"use client";
 
-import { PropsWithChildren } from "react"
-
-import Link from "next/link"
-
-import { useQuery } from "@tanstack/react-query"
-import { HTTPError } from "ky"
-
-import kyInstance from "@/lib/ky"
-import { UserData } from "@/lib/types"
-
-import UserTooltip from "./UserTooltip"
+import kyInstance from "@/lib/ky";
+import { UserData } from "@/lib/types";
+import { useQuery } from "@tanstack/react-query";
+import { HTTPError } from "ky";
+import Link from "next/link";
+import { PropsWithChildren } from "react";
+import UserTooltip from "./UserTooltip";
 
 interface UserLinkWithTooltipProps extends PropsWithChildren {
-  username: string
+  username: string;
 }
 
 export default function UserLinkWithTooltip({
@@ -26,12 +22,12 @@ export default function UserLinkWithTooltip({
       kyInstance.get(`/api/users/username/${username}`).json<UserData>(),
     retry(failureCount, error) {
       if (error instanceof HTTPError && error.response.status === 404) {
-        return false
+        return false;
       }
-      return failureCount < 3
+      return failureCount < 3;
     },
     staleTime: Infinity,
-  })
+  });
 
   if (!data) {
     return (
@@ -41,7 +37,7 @@ export default function UserLinkWithTooltip({
       >
         {children}
       </Link>
-    )
+    );
   }
 
   return (
@@ -53,5 +49,5 @@ export default function UserLinkWithTooltip({
         {children}
       </Link>
     </UserTooltip>
-  )
+  );
 }

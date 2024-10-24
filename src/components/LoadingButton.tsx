@@ -1,10 +1,9 @@
-import { Loader2 } from "lucide-react"
-
-import { Button, ButtonProps } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
+import { Button, ButtonProps } from "./ui/button";
 
 interface LoadingButtonProps extends ButtonProps {
-  loading: boolean
+  loading: boolean;
 }
 
 export default function LoadingButton({
@@ -22,5 +21,5 @@ export default function LoadingButton({
       {loading && <Loader2 className="size-5 animate-spin" />}
       {props.children}
     </Button>
-  )
+  );
 }
