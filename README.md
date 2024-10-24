@@ -2,7 +2,7 @@
 
 A full-stack social media app with Next.js.
 
-Try here:
+Try here: https://nextjs-social-media-app-five.vercel.app
 
 Account: `Test`
 Password: `11111111`
