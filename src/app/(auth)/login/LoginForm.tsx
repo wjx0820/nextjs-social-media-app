@@ -25,8 +25,8 @@ export default function LoginForm() {
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: "Test",
+      password: "11111111",
     },
   });
 
